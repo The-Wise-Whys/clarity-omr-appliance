@@ -1,0 +1,16 @@
+#!/bin/sh
+set -eux
+
+mkdir -p /etc/systemd/system/multi-user.target.wants
+ln -sf /etc/systemd/system/clarity-appliance.service /etc/systemd/system/multi-user.target.wants/clarity-appliance.service
+ln -sf /lib/systemd/system/multi-user.target /etc/systemd/system/default.target
+
+mkdir -p /etc/X11
+cat > /etc/X11/Xwrapper.config <<'EOF'
+allowed_users=anybody
+needs_root_rights=yes
+EOF
+
+chmod 0755 /usr/local/bin/clarity-appliance-session
+chmod 0755 /opt/clarity-appliance/app/clarity_appliance.py
+

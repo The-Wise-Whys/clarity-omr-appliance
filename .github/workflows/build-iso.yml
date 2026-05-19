@@ -1,0 +1,34 @@
+name: Build Clarity OMR Appliance ISO
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 360
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Install ISO build tools
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y live-build xorriso squashfs-tools debootstrap syslinux-common isolinux grub-pc-bin grub-efi-amd64-bin mtools dosfstools
+
+      - name: Build ISO
+        run: |
+          ./scripts/build-iso-linux.sh
+
+      - name: Collect ISO artifact
+        run: |
+          mkdir -p artifact
+          cp live-build/clarity-omr-appliance-amd64.iso artifact/
+          cp live-build/clarity-omr-appliance-amd64.iso.sha256 artifact/
+
+      - name: Upload ISO
+        uses: actions/upload-artifact@v4
+        with:
+          name: clarity-omr-appliance-iso
+          path: artifact/

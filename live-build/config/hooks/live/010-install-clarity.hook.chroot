@@ -1,0 +1,42 @@
+#!/bin/sh
+set -eux
+
+export DEBIAN_FRONTEND=noninteractive
+export PIP_DISABLE_PIP_VERSION_CHECK=1
+export PIP_ROOT_USER_ACTION=ignore
+
+CLARITY_COMMIT="c6bb8a4d2a5b52842a9c41bd0f761f58d02f6f82"
+CLARITY_DIR="/opt/Clarity-OMR"
+VENV_DIR="/opt/clarity-venv"
+
+rm -rf "${CLARITY_DIR}" "${VENV_DIR}"
+git clone https://github.com/clquwu/Clarity-OMR.git "${CLARITY_DIR}"
+cd "${CLARITY_DIR}"
+git checkout "${CLARITY_COMMIT}"
+printf '%s\n' "${CLARITY_COMMIT}" > "${CLARITY_DIR}/BUILD-COMMIT.txt"
+
+python3 -m venv "${VENV_DIR}"
+"${VENV_DIR}/bin/pip" install --upgrade pip setuptools wheel
+
+# Install CPU-only PyTorch first so pip does not pull CUDA packages into the ISO.
+"${VENV_DIR}/bin/pip" install torch torchvision --index-url https://download.pytorch.org/whl/cpu
+"${VENV_DIR}/bin/pip" install -r requirements.txt
+
+# Put the model files into the ISO now. The Acer should not need internet after boot.
+"${VENV_DIR}/bin/python" - <<'PY'
+from pathlib import Path
+from huggingface_hub import hf_hub_download
+
+target = Path("/opt/Clarity-OMR/info")
+target.mkdir(parents=True, exist_ok=True)
+for filename in ("yolo.pt", "model.safetensors"):
+    hf_hub_download(
+        repo_id="clquwu/Clarity-OMR",
+        filename=filename,
+        local_dir=str(target),
+    )
+PY
+
+find "${CLARITY_DIR}" -type d -name __pycache__ -prune -exec rm -rf {} +
+find "${VENV_DIR}" -type d -name __pycache__ -prune -exec rm -rf {} +
+
