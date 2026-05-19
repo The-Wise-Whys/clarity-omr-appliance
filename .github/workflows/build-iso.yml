@@ -31,10 +31,24 @@ jobs:
             grub-efi-amd64-bin \
             mtools \
             dosfstools
+          ISOHYBRID_PATH="$(command -v isohybrid || true)"
+          if [ -z "${ISOHYBRID_PATH}" ]; then
+            ISOHYBRID_PATH="$(dpkg -L syslinux-utils | grep '/isohybrid$' | head -n 1 || true)"
+          fi
+          if [ -z "${ISOHYBRID_PATH}" ]; then
+            echo "isohybrid was not found after installing syslinux-utils."
+            dpkg -L syslinux-utils || true
+            exit 127
+          fi
+          sudo install -D -m 0755 "${ISOHYBRID_PATH}" /usr/local/bin/isohybrid
+          sudo ln -sf /usr/local/bin/isohybrid /usr/bin/isohybrid
           command -v isohybrid
+          ls -l /usr/local/bin/isohybrid /usr/bin/isohybrid
 
       - name: Configure and build live ISO
         run: |
+          export PATH="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:${PATH}"
+          command -v isohybrid
           cd live-build
           sudo lb clean --purge
           sudo sed -i 's|/Contents-|/main/Contents-|g' /usr/lib/live/build/lb_chroot_linux-image
@@ -52,7 +66,7 @@ jobs:
             --iso-publisher "Local build" \
             --iso-volume CLARITY_OMR \
             --bootappend-live "boot=live components quiet splash noeject hostname=clarity-omr username=appliance"
-          sudo lb build
+          sudo env PATH="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin" lb build
 
       - name: Upload bootable ISO artifact
         uses: actions/upload-artifact@v4
