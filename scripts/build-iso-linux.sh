@@ -6,15 +6,15 @@ BUILD_DIR="${ROOT_DIR}/live-build"
 
 if ! command -v lb >/dev/null 2>&1; then
   echo "The live-build tool is missing."
-  echo "Install it with: sudo apt install live-build xorriso squashfs-tools debootstrap syslinux-common isolinux grub-pc-bin grub-efi-amd64-bin mtools dosfstools"
+  echo "Install it with: sudo apt install live-build xorriso squashfs-tools debootstrap syslinux-common syslinux-utils isolinux grub-pc-bin grub-efi-amd64-bin mtools dosfstools"
   exit 1
 fi
 
 cd "${BUILD_DIR}"
 
-sudo lb clean --purge || true
-sudo lb config
-sudo lb build
+sudo lb clean noauto --purge || true
+sudo lb config noauto
+sudo lb build noauto
 
 if [ -f "${BUILD_DIR}/clarity-omr-appliance-amd64.hybrid.iso" ]; then
   mv "${BUILD_DIR}/clarity-omr-appliance-amd64.hybrid.iso" "${BUILD_DIR}/clarity-omr-appliance-amd64.iso"

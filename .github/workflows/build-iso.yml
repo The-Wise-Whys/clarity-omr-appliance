@@ -6,6 +6,9 @@ on:
     branches:
       - main
 
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+
 jobs:
   build-iso:
     name: Build Debian 12 Live ISO
@@ -50,9 +53,9 @@ jobs:
           export PATH="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:${PATH}"
           command -v isohybrid
           cd live-build
-          sudo lb clean --purge
+          sudo lb clean noauto --purge
           sudo sed -i 's|/Contents-|/main/Contents-|g' /usr/lib/live/build/lb_chroot_linux-image
-          sudo lb config \
+          sudo lb config noauto \
             --mode debian \
             --distribution bookworm \
             --architectures amd64 \
@@ -66,7 +69,7 @@ jobs:
             --iso-publisher "Local build" \
             --iso-volume CLARITY_OMR \
             --bootappend-live "boot=live components quiet splash noeject hostname=clarity-omr username=appliance"
-          sudo env PATH="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin" lb build
+          sudo env PATH="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin" lb build noauto
 
       - name: Upload bootable ISO artifact
         uses: actions/upload-artifact@v4

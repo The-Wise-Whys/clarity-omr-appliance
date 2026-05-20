@@ -18,6 +18,7 @@ xserver-xorg-input-all
 xinit
 x11-xserver-utils
 fonts-dejavu-core
+syslinux-utils
 libgl1
 libglib2.0-0
 libgomp1
