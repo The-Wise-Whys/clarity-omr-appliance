@@ -61,7 +61,7 @@ jobs:
             --architectures amd64 \
             --archive-areas "main contrib non-free non-free-firmware" \
             --binary-images iso-hybrid \
-            --bootloader syslinux,grub-efi \
+            --bootloaders syslinux \
             --debian-installer false \
             --memtest none \
             --security false \
