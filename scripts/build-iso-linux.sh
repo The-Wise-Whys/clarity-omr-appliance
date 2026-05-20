@@ -61,13 +61,19 @@ sudo find /usr/lib/live/build /usr/share/live/build -type f -exec sed -i \
   {} +
 sudo grep -R "/root/isolinux" -n /usr/lib/live/build /usr/share/live/build 2>/dev/null || true
 sudo lb config noauto
+install_boot_file() {
+  source_path="$1"
+  target_path="$2"
+  sudo rm -f "${target_path}"
+  sudo install -D -m 0644 "${source_path}" "${target_path}"
+}
 sudo mkdir -p /root/isolinux
-sudo cp -L /usr/lib/ISOLINUX/isolinux.bin /root/isolinux/isolinux.bin
-sudo cp -L /usr/lib/syslinux/modules/bios/vesamenu.c32 /root/isolinux/vesamenu.c32
-sudo cp -L /usr/lib/syslinux/modules/bios/ldlinux.c32 /root/isolinux/ldlinux.c32
-sudo cp -L /usr/lib/syslinux/modules/bios/libcom32.c32 /root/isolinux/libcom32.c32
-sudo cp -L /usr/lib/syslinux/modules/bios/libutil.c32 /root/isolinux/libutil.c32
-sudo cp -L /usr/lib/syslinux/modules/bios/menu.c32 /root/isolinux/menu.c32
+install_boot_file /usr/lib/ISOLINUX/isolinux.bin /root/isolinux/isolinux.bin
+install_boot_file /usr/lib/syslinux/modules/bios/vesamenu.c32 /root/isolinux/vesamenu.c32
+install_boot_file /usr/lib/syslinux/modules/bios/ldlinux.c32 /root/isolinux/ldlinux.c32
+install_boot_file /usr/lib/syslinux/modules/bios/libcom32.c32 /root/isolinux/libcom32.c32
+install_boot_file /usr/lib/syslinux/modules/bios/libutil.c32 /root/isolinux/libutil.c32
+install_boot_file /usr/lib/syslinux/modules/bios/menu.c32 /root/isolinux/menu.c32
 sudo mkdir -p /usr/share/live/build/bootloaders/isolinux
 sudo mkdir -p /usr/share/live/build/bootloaders/syslinux
 sudo mkdir -p /usr/share/live/build/bootloaders/syslinux_common
@@ -75,15 +81,15 @@ for target in \
   /usr/share/live/build/bootloaders/isolinux \
   /usr/share/live/build/bootloaders/syslinux \
   /usr/share/live/build/bootloaders/syslinux_common; do
-  sudo cp -L /usr/lib/ISOLINUX/isolinux.bin "${target}/isolinux.bin"
-  sudo cp -L /usr/lib/syslinux/modules/bios/vesamenu.c32 "${target}/vesamenu.c32"
-  sudo cp -L /usr/lib/syslinux/modules/bios/menu.c32 "${target}/menu.c32"
-  sudo cp -L /usr/lib/syslinux/modules/bios/ldlinux.c32 "${target}/ldlinux.c32"
-  sudo cp -L /usr/lib/syslinux/modules/bios/libcom32.c32 "${target}/libcom32.c32"
-  sudo cp -L /usr/lib/syslinux/modules/bios/libutil.c32 "${target}/libutil.c32"
-  sudo cp -L /usr/lib/syslinux/modules/bios/chain.c32 "${target}/chain.c32"
-  sudo cp -L /usr/lib/syslinux/modules/bios/reboot.c32 "${target}/reboot.c32"
-  sudo cp -L /usr/lib/syslinux/modules/bios/hdt.c32 "${target}/hdt.c32"
+  install_boot_file /usr/lib/ISOLINUX/isolinux.bin "${target}/isolinux.bin"
+  install_boot_file /usr/lib/syslinux/modules/bios/vesamenu.c32 "${target}/vesamenu.c32"
+  install_boot_file /usr/lib/syslinux/modules/bios/menu.c32 "${target}/menu.c32"
+  install_boot_file /usr/lib/syslinux/modules/bios/ldlinux.c32 "${target}/ldlinux.c32"
+  install_boot_file /usr/lib/syslinux/modules/bios/libcom32.c32 "${target}/libcom32.c32"
+  install_boot_file /usr/lib/syslinux/modules/bios/libutil.c32 "${target}/libutil.c32"
+  install_boot_file /usr/lib/syslinux/modules/bios/chain.c32 "${target}/chain.c32"
+  install_boot_file /usr/lib/syslinux/modules/bios/reboot.c32 "${target}/reboot.c32"
+  install_boot_file /usr/lib/syslinux/modules/bios/hdt.c32 "${target}/hdt.c32"
 done
 sudo lb build noauto
 
