@@ -14,3 +14,10 @@ EOF
 chmod 0755 /usr/local/bin/clarity-appliance-session
 chmod 0755 /opt/clarity-appliance/app/clarity_appliance.py
 
+mkdir -p /root/isolinux
+cp -L /usr/lib/ISOLINUX/isolinux.bin /root/isolinux/isolinux.bin
+cp -L /usr/lib/syslinux/modules/bios/vesamenu.c32 /root/isolinux/vesamenu.c32
+cp -L /usr/lib/syslinux/modules/bios/ldlinux.c32 /root/isolinux/ldlinux.c32
+cp -L /usr/lib/syslinux/modules/bios/libcom32.c32 /root/isolinux/libcom32.c32
+cp -L /usr/lib/syslinux/modules/bios/libutil.c32 /root/isolinux/libutil.c32
+cp -L /usr/lib/syslinux/modules/bios/menu.c32 /root/isolinux/menu.c32

@@ -45,8 +45,16 @@ jobs:
           fi
           sudo install -D -m 0755 "${ISOHYBRID_PATH}" /usr/local/bin/isohybrid
           sudo ln -sf /usr/local/bin/isohybrid /usr/bin/isohybrid
+          sudo mkdir -p /root/isolinux
+          sudo cp -L /usr/lib/ISOLINUX/isolinux.bin /root/isolinux/isolinux.bin
+          sudo cp -L /usr/lib/syslinux/modules/bios/vesamenu.c32 /root/isolinux/vesamenu.c32
+          sudo cp -L /usr/lib/syslinux/modules/bios/ldlinux.c32 /root/isolinux/ldlinux.c32
+          sudo cp -L /usr/lib/syslinux/modules/bios/libcom32.c32 /root/isolinux/libcom32.c32
+          sudo cp -L /usr/lib/syslinux/modules/bios/libutil.c32 /root/isolinux/libutil.c32
+          sudo cp -L /usr/lib/syslinux/modules/bios/menu.c32 /root/isolinux/menu.c32
           command -v isohybrid
           ls -l /usr/local/bin/isohybrid /usr/bin/isohybrid
+          sudo ls -l /root/isolinux
 
       - name: Configure and build live ISO
         run: |

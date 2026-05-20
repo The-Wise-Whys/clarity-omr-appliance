@@ -14,6 +14,13 @@ cd "${BUILD_DIR}"
 
 sudo lb clean noauto --purge || true
 sudo lb config noauto
+sudo mkdir -p /root/isolinux
+sudo cp -L /usr/lib/ISOLINUX/isolinux.bin /root/isolinux/isolinux.bin
+sudo cp -L /usr/lib/syslinux/modules/bios/vesamenu.c32 /root/isolinux/vesamenu.c32
+sudo cp -L /usr/lib/syslinux/modules/bios/ldlinux.c32 /root/isolinux/ldlinux.c32
+sudo cp -L /usr/lib/syslinux/modules/bios/libcom32.c32 /root/isolinux/libcom32.c32
+sudo cp -L /usr/lib/syslinux/modules/bios/libutil.c32 /root/isolinux/libutil.c32
+sudo cp -L /usr/lib/syslinux/modules/bios/menu.c32 /root/isolinux/menu.c32
 sudo lb build noauto
 
 if [ -f "${BUILD_DIR}/clarity-omr-appliance-amd64.hybrid.iso" ]; then
