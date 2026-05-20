@@ -63,6 +63,16 @@ jobs:
           cd live-build
           sudo lb clean noauto --purge
           sudo sed -i 's|/Contents-|/main/Contents-|g' /usr/lib/live/build/lb_chroot_linux-image
+          sudo grep -R "/root/isolinux" -n /usr/lib/live/build /usr/share/live/build 2>/dev/null || true
+          sudo find /usr/lib/live/build /usr/share/live/build -type f -exec sed -i \
+            -e 's|/root/isolinux/isolinux.bin|/usr/lib/ISOLINUX/isolinux.bin|g' \
+            -e 's|/root/isolinux/vesamenu.c32|/usr/lib/syslinux/modules/bios/vesamenu.c32|g' \
+            -e 's|/root/isolinux/menu.c32|/usr/lib/syslinux/modules/bios/menu.c32|g' \
+            -e 's|/root/isolinux/ldlinux.c32|/usr/lib/syslinux/modules/bios/ldlinux.c32|g' \
+            -e 's|/root/isolinux/libcom32.c32|/usr/lib/syslinux/modules/bios/libcom32.c32|g' \
+            -e 's|/root/isolinux/libutil.c32|/usr/lib/syslinux/modules/bios/libutil.c32|g' \
+            {} +
+          sudo grep -R "/root/isolinux" -n /usr/lib/live/build /usr/share/live/build 2>/dev/null || true
           sudo lb config noauto \
             --mode debian \
             --distribution bookworm \

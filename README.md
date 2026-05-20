@@ -72,7 +72,7 @@ Install the build tools:
 
 ```bash
 sudo apt update
-sudo apt install -y live-build xorriso squashfs-tools debootstrap syslinux-common isolinux grub-pc-bin grub-efi-amd64-bin mtools dosfstools
+sudo apt install -y live-build xorriso squashfs-tools debootstrap syslinux-common syslinux-utils isolinux grub-pc-bin grub-efi-amd64-bin mtools dosfstools
 ```
 
 Build the ISO:
