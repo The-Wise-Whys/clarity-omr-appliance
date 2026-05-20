@@ -29,6 +29,7 @@ jobs:
             debootstrap \
             syslinux-common \
             syslinux-utils \
+            syslinux \
             isolinux \
             grub-pc-bin \
             grub-efi-amd64-bin \
@@ -79,6 +80,7 @@ jobs:
             --architectures amd64 \
             --archive-areas "main contrib non-free non-free-firmware" \
             --binary-images iso-hybrid \
+            --build-with-chroot false \
             --bootloader syslinux \
             --debian-installer false \
             --memtest none \

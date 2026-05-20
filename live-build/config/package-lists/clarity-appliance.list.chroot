@@ -19,6 +19,7 @@ xinit
 x11-xserver-utils
 fonts-dejavu-core
 isolinux
+syslinux
 syslinux-common
 syslinux-utils
 libgl1
