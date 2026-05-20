@@ -6,9 +6,17 @@ BUILD_DIR="${ROOT_DIR}/live-build"
 
 if ! command -v lb >/dev/null 2>&1; then
   echo "The live-build tool is missing."
-  echo "Install it with: sudo apt install live-build xorriso squashfs-tools debootstrap syslinux-common syslinux-utils syslinux isolinux grub-pc-bin grub-efi-amd64-bin mtools dosfstools"
+  echo "Install it with: sudo apt install live-build xorriso squashfs-tools debootstrap dctrl-tools syslinux-common syslinux-utils syslinux isolinux grub-pc-bin grub-efi-amd64-bin mtools dosfstools"
   exit 1
 fi
+
+for tool in lb xorriso mksquashfs debootstrap grep-aptavail isohybrid mkfs.vfat mcopy syslinux; do
+  if ! command -v "${tool}" >/dev/null 2>&1; then
+    echo "Missing required build tool: ${tool}"
+    echo "Install the dependencies shown above, then run this script again."
+    exit 1
+  fi
+done
 
 cd "${BUILD_DIR}"
 
