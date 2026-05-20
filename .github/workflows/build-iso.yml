@@ -28,6 +28,7 @@ jobs:
             squashfs-tools \
             debootstrap \
             dctrl-tools \
+            librsvg2-bin \
             syslinux-common \
             syslinux-utils \
             syslinux \
@@ -54,10 +55,36 @@ jobs:
           sudo cp -L /usr/lib/syslinux/modules/bios/libcom32.c32 /root/isolinux/libcom32.c32
           sudo cp -L /usr/lib/syslinux/modules/bios/libutil.c32 /root/isolinux/libutil.c32
           sudo cp -L /usr/lib/syslinux/modules/bios/menu.c32 /root/isolinux/menu.c32
+          sudo tee /usr/bin/rsvg >/dev/null <<'RSVG_WRAPPER'
+          #!/usr/bin/env bash
+          set -euo pipefail
+          args=()
+          positional=()
+          while (($#)); do
+            case "$1" in
+              --format|--height|--width)
+                args+=("$1" "$2")
+                shift 2
+                ;;
+              *)
+                positional+=("$1")
+                shift
+                ;;
+            esac
+          done
+          if ((${#positional[@]} >= 2)); then
+            output="${positional[-1]}"
+            unset 'positional[-1]'
+            exec /usr/bin/rsvg-convert "${args[@]}" --output "$output" "${positional[@]}"
+          fi
+          exec /usr/bin/rsvg-convert "${args[@]}" "${positional[@]}"
+          RSVG_WRAPPER
+          sudo sed -i 's/^          //' /usr/bin/rsvg
+          sudo chmod 0755 /usr/bin/rsvg
           command -v isohybrid
           ls -l /usr/local/bin/isohybrid /usr/bin/isohybrid
           sudo ls -l /root/isolinux
-          for tool in lb xorriso mksquashfs debootstrap grep-aptavail isohybrid mkfs.vfat mcopy syslinux; do
+          for tool in lb xorriso mksquashfs debootstrap grep-aptavail isohybrid mkfs.vfat mcopy syslinux rsvg rsvg-convert; do
             command -v "${tool}"
           done
 

@@ -6,11 +6,39 @@ BUILD_DIR="${ROOT_DIR}/live-build"
 
 if ! command -v lb >/dev/null 2>&1; then
   echo "The live-build tool is missing."
-  echo "Install it with: sudo apt install live-build xorriso squashfs-tools debootstrap dctrl-tools syslinux-common syslinux-utils syslinux isolinux grub-pc-bin grub-efi-amd64-bin mtools dosfstools"
+  echo "Install it with: sudo apt install live-build xorriso squashfs-tools debootstrap dctrl-tools librsvg2-bin syslinux-common syslinux-utils syslinux isolinux grub-pc-bin grub-efi-amd64-bin mtools dosfstools"
   exit 1
 fi
 
-for tool in lb xorriso mksquashfs debootstrap grep-aptavail isohybrid mkfs.vfat mcopy syslinux; do
+if command -v rsvg-convert >/dev/null 2>&1 && ! command -v rsvg >/dev/null 2>&1; then
+  sudo tee /usr/bin/rsvg >/dev/null <<'RSVG_WRAPPER'
+#!/usr/bin/env bash
+set -euo pipefail
+args=()
+positional=()
+while (($#)); do
+  case "$1" in
+    --format|--height|--width)
+      args+=("$1" "$2")
+      shift 2
+      ;;
+    *)
+      positional+=("$1")
+      shift
+      ;;
+  esac
+done
+if ((${#positional[@]} >= 2)); then
+  output="${positional[-1]}"
+  unset 'positional[-1]'
+  exec /usr/bin/rsvg-convert "${args[@]}" --output "$output" "${positional[@]}"
+fi
+exec /usr/bin/rsvg-convert "${args[@]}" "${positional[@]}"
+RSVG_WRAPPER
+  sudo chmod 0755 /usr/bin/rsvg
+fi
+
+for tool in lb xorriso mksquashfs debootstrap grep-aptavail isohybrid mkfs.vfat mcopy syslinux rsvg rsvg-convert; do
   if ! command -v "${tool}" >/dev/null 2>&1; then
     echo "Missing required build tool: ${tool}"
     echo "Install the dependencies shown above, then run this script again."

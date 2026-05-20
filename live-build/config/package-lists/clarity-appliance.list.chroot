@@ -18,6 +18,7 @@ xserver-xorg-input-all
 xinit
 x11-xserver-utils
 fonts-dejavu-core
+librsvg2-bin
 isolinux
 syslinux
 syslinux-common
